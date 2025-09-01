@@ -463,8 +463,10 @@ app.put("/api/profile", authMiddleware, async (req, res) => {
 const PORT = process.env.PORT || 5001;
 
 // ✅ Route สำหรับทดสอบว่า Backend Online อยู่
-app.get("/", (req, res) => {
-  res.send("Backend API is running 🚀");
+
+app.get("/api", (req, res) => {
+  res.send("✅ API root is working!");
 });
+
 
 app.listen(PORT, () => console.log(`API running on http://localhost:${PORT}`));

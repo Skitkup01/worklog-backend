@@ -13,7 +13,16 @@ const app = express();
 // ⚙️ Middleware หลัก
 // ==============================
 // อนุญาตให้ frontend เรียก API ได้ (กำหนด origin ให้ตรงกับ React)
-app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+
+app.use(cors({
+  origin: [
+    "http://localhost:5173", 
+    "https://worklog-frontend-wp76.vercel.app",  
+    "https://worklog-frontend-wp76-l4bdpqnvs-skits-projects-afc8739c.vercel.app"
+  ],
+  credentials: true
+}));
+
 // อ่านข้อมูล JSON ใน request body
 app.use(express.json());
 
@@ -447,13 +456,15 @@ app.put("/api/profile", authMiddleware, async (req, res) => {
 });
 
 
-
-
-
-
 //
 // ==============================
 // 🚀 START SERVER
 // ==============================
 const PORT = process.env.PORT || 5001;
+
+// ✅ Route สำหรับทดสอบว่า Backend Online อยู่
+app.get("/", (req, res) => {
+  res.send("Backend API is running 🚀");
+});
+
 app.listen(PORT, () => console.log(`API running on http://localhost:${PORT}`));

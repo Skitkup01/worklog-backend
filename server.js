@@ -464,9 +464,11 @@ const PORT = process.env.PORT || 5001;
 
 // ✅ Route สำหรับทดสอบว่า Backend Online อยู่
 
+// ✅ Route ทดสอบว่า API root ใช้งานได้
 app.get("/api", (req, res) => {
-  res.send("✅ API root is working!");
+  res.json({ message: "✅ API root is working!" });
 });
+
 
 
 app.listen(PORT, () => console.log(`API running on http://localhost:${PORT}`));

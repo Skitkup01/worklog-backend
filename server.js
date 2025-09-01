@@ -235,7 +235,7 @@ app.put("/api/daily-logs/:id", authMiddleware, async (req, res) => {
   try {
     const [result] = await pool.query(
       `UPDATE daily_logs 
-       SET activity = ?, updated_at = NOW() 
+       SET activity = ?, updated_at = CONVERT_TZ(NOW(), '+00:00', '+07:00')
        WHERE log_id = ? 
          AND user_id = ? 
          AND status = 'pending'`,
@@ -246,11 +246,21 @@ app.put("/api/daily-logs/:id", authMiddleware, async (req, res) => {
       return res.status(404).json({ error: "ไม่พบข้อมูล หรือไม่สามารถแก้ไขได้" });
     }
 
-    res.json({ message: "แก้ไขบันทึกงานสำเร็จ" });
-  } catch {
+    // ✅ ดึงข้อมูลล่าสุดกลับมาให้ frontend ใช้ต่อ
+    const [rows] = await pool.query(
+      `SELECT log_id, log_date, activity, status, approved_by, created_at, updated_at
+       FROM daily_logs
+       WHERE log_id = ? AND user_id = ?`,
+      [req.params.id, req.user.id]
+    );
+
+    res.json({ message: "แก้ไขบันทึกงานสำเร็จ", log: rows[0] });
+  } catch (err) {
+    console.error(err);
     res.status(500).json({ error: "เกิดข้อผิดพลาด" });
   }
 });
+
 
 //
 // ==============================
